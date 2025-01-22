@@ -1,5 +1,6 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, unused_element
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +9,18 @@ class AddExpenseScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
+
+  void _saveExpense() async {
+    if (_formKey.currentState!.validate()) {
+      await FirebaseFirestore.instance.collection('expenses').add({
+        'amount': double.parse(_amountController.text),
+        'description': _descriptionController.text,
+        'date': DateTime.now(),
+      });
+      Get.back();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
