@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expense_tracker/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,8 +9,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      // backgroundColor: Colors.blue,
       appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
         title: Text('Expense Tracker'),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -26,12 +29,48 @@ class HomeScreen extends StatelessWidget {
           return Column(
             children: [
               Card(
+                color: tPrimaryColor,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Text(
-                          'Total Expense: \$${totalAmount.toStringAsFixed(2)}'),
+                      //------------Budget-------
+                      Row(
+                        children: [
+                          Text(
+                            "⬇️Total Budget:",
+                            style: TextStyle(
+                                fontSize: tmidfontsize(context),
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            ' \Rs ${totalAmount.toStringAsFixed(2)}',
+                            style: TextStyle(
+                                fontSize: tsmallfontsize(context),
+                                fontWeight: FontWeight.w400,
+                                color: tin),
+                          ),
+                        ],
+                      ),
+
+                      //--------Expense-----
+                      Row(
+                        children: [
+                          Text(
+                            "🔺Total Expense:",
+                            style: TextStyle(
+                                fontSize: tmidfontsize(context),
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            ' \Rs ${totalAmount.toStringAsFixed(2)}',
+                            style: TextStyle(
+                                fontSize: tsmallfontsize(context),
+                                fontWeight: FontWeight.w400,
+                                color: tout),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -43,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                         final expense = expenses[index];
                         return ListTile(
                           title: Text(expense['description']),
-                          subtitle: Text('\$${expense['amount'].toString()}'),
+                          subtitle: Text('\Rs ${expense['amount']}'),
                         );
                       }))
             ],
@@ -52,7 +91,7 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to("/addexpense_screen");
+          Get.toNamed("/addexpense_screen");
         },
         child: Icon(Icons.add),
       ),

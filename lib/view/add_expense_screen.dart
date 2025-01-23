@@ -25,6 +25,8 @@ class AddExpenseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text('Add Expense'),
       ),
       body: LayoutBuilder(builder: (context, constraints) {
@@ -65,13 +67,7 @@ class AddExpenseScreen extends StatelessWidget {
                       },
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // Save expense to Firebase
-                          // Navigator.pop(context);
-                          Get.back();
-                        }
-                      },
+                      onPressed: _saveExpense,
                       child: Text('Save'),
                     ),
                   ],
