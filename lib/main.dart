@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
         home: const HomeScreen(),
         getPages: [
           GetPage(name: '/home_screen', page: () => HomeScreen()),
-          GetPage(name: '/addexpense_screen', page: () => AddExpenseScreen()),
         ]);
   }
 }

@@ -5,17 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddExpenseScreen extends StatelessWidget {
-  AddExpenseScreen({super.key});
+  final bool isCashIn;
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  void _saveExpense() async {
+  AddExpenseScreen({super.key, required this.isCashIn});
+
+  void _saveTransaction() async {
     if (_formKey.currentState!.validate()) {
-      await FirebaseFirestore.instance.collection('expenses').add({
-        'amount': double.parse(_amountController.text),
-        'description': _descriptionController.text,
-        'date': DateTime.now(),
+      final amount = double.parse(_amountController.text);
+      final description = _descriptionController.text;
+      final date = DateTime.now();
+
+      await FirebaseFirestore.instance.collection('transactions').add({
+        'amount': isCashIn ? amount : -amount, // Negative for Cash Out
+        'description': description,
+        'date': date,
+        'type': isCashIn ? 'Cash In' : 'Cash Out',
       });
       Get.back();
     }
@@ -24,57 +31,44 @@ class AddExpenseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text('Add Expense'),
-      ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        final screenWidth = constraints.maxWidth;
-        final screenHeight = constraints.maxHeight;
-        final containerWidth =
-            constraints.maxWidth * 0.35; // Adjust for padding
-        final containerHeight =
-            constraints.maxHeight * 0.12; // Adjust height to maintain aspect
-
-        return SingleChildScrollView(
-          child: Container(
-            height: screenHeight,
-            width: screenWidth,
-            child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _amountController,
-                      decoration: InputDecoration(labelText: 'Amount'),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an amount';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _descriptionController,
-                      decoration: InputDecoration(labelText: 'Description'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a description';
-                        }
-                        return null;
-                      },
-                    ),
-                    ElevatedButton(
-                      onPressed: _saveExpense,
-                      child: Text('Save'),
-                    ),
-                  ],
-                )),
-          ),
-        );
-      }),
-    );
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Text(isCashIn ? 'Add Cash In' : 'Add Cash Out'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _amountController,
+                    decoration: InputDecoration(labelText: 'Amount'),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an amount';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(labelText: 'Description'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a description';
+                      }
+                      return null;
+                    },
+                  ),
+                  ElevatedButton(
+                    onPressed: _saveTransaction,
+                    child: Text('Save'),
+                  ),
+                ],
+              )),
+        ));
   }
 }
