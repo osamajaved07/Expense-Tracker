@@ -1,4 +1,3 @@
-import 'package:expense_tracker/view/add_expense_screen.dart';
 import 'package:expense_tracker/view/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

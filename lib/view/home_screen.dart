@@ -58,7 +58,7 @@ class HomeScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              ' \Rs ${totalBudget.toStringAsFixed(2)}',
+                              ' \Rs ${totalBudget.toStringAsFixed(0)}',
                               style: TextStyle(
                                   fontSize: tsmallfontsize(context),
                                   fontWeight: FontWeight.w400,
@@ -77,7 +77,7 @@ class HomeScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              ' \Rs ${totalExpense.toStringAsFixed(2)}',
+                              ' \Rs ${totalExpense.toStringAsFixed(0)}',
                               style: TextStyle(
                                   fontSize: tsmallfontsize(context),
                                   fontWeight: FontWeight.w400,
@@ -89,13 +89,13 @@ class HomeScreen extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              "🔺Remaining Balance:",
+                              "             Remaining Balance:",
                               style: TextStyle(
                                   fontSize: tmidfontsize(context),
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              ' \Rs ${remainingBalance.toStringAsFixed(2)}',
+                              ' \Rs ${remainingBalance.toStringAsFixed(0)}',
                               style: TextStyle(
                                   fontSize: tsmallfontsize(context),
                                   fontWeight: FontWeight.w400,
@@ -121,16 +121,33 @@ class HomeScreen extends StatelessWidget {
                           final formattedTime =
                               DateFormat('hh:mm a').format(date);
 
-                          return ListTile(
-                            title: Text(description,
-                                style: TextStyle(
-                                    fontSize: tsmallfontsize(context))),
-                            subtitle: Text('$formattedDate at $formattedTime'),
-                            trailing: Text(
-                              '\Rs ${amount.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: tverysmallfontsize(context),
+                          return Card(
+                            elevation: 2.0, // Add a subtle shadow
+                            margin: EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 8.0), // Add margin
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8.0), // Rounded corners
+                            ),
+                            child: ListTile(
+                              leading: Icon(
+                                amount > 0
+                                    ? Icons.arrow_downward
+                                    : Icons.arrow_upward,
                                 color: amount > 0 ? Colors.green : Colors.red,
+                                size: 24.0,
+                              ),
+                              title: Text(description,
+                                  style: TextStyle(
+                                      fontSize: tsmallfontsize(context))),
+                              subtitle:
+                                  Text('$formattedDate at $formattedTime'),
+                              trailing: Text(
+                                '\Rs ${amount.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: tverysmallfontsize(context),
+                                  color: amount > 0 ? Colors.green : Colors.red,
+                                ),
                               ),
                             ),
                           );
