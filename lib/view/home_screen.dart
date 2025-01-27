@@ -17,8 +17,10 @@ class HomeScreen extends StatelessWidget {
         title: Text('Expense Tracker'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance.collection('transactions').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('transactions')
+            .orderBy('date', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -43,6 +45,13 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 Card(
+                  elevation: 2.0, // Add a subtle shadow
+                  margin: EdgeInsets.symmetric(
+                      vertical: 4.0, horizontal: 8.0), // Add margin
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(16.0), // Rounded corners
+                  ),
                   color: tPrimaryColor,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -62,7 +71,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: tsmallfontsize(context),
                                   fontWeight: FontWeight.w400,
-                                  color: tin),
+                                  color: tSecondaryColor),
                             ),
                           ],
                         ),
@@ -81,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: tsmallfontsize(context),
                                   fontWeight: FontWeight.w400,
-                                  color: tout),
+                                  color: tSecondaryColor),
                             ),
                           ],
                         ),
@@ -99,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: tsmallfontsize(context),
                                   fontWeight: FontWeight.w400,
-                                  color: tout),
+                                  color: tSecondaryColor),
                             ),
                           ],
                         ),
@@ -130,6 +139,20 @@ class HomeScreen extends StatelessWidget {
                                   BorderRadius.circular(8.0), // Rounded corners
                             ),
                             child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddExpenseScreen(
+                                      isCashIn: transaction['amount'] > 0,
+                                      transactionId: transaction.id,
+                                      existingAmount: transaction['amount'],
+                                      existingDescription:
+                                          transaction['description'],
+                                    ),
+                                  ),
+                                );
+                              },
                               leading: Icon(
                                 amount > 0
                                     ? Icons.arrow_downward
