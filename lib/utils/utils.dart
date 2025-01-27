@@ -30,3 +30,11 @@ double tlargefontsize(BuildContext context) {
 double tsmallspace(BuildContext context) {
   return MediaQuery.of(context).size.width * 0.04;
 }
+
+double tfullwidth(BuildContext context) {
+  return MediaQuery.of(context).size.width;
+}
+
+double tfullheight(BuildContext context) {
+  return MediaQuery.of(context).size.height;
+}

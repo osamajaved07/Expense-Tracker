@@ -72,7 +72,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
           centerTitle: true,
           title: Text(widget.transactionId == null
               ? (widget.isCashIn ? 'Add Cash In' : 'Add Cash Out')
