@@ -1,3 +1,4 @@
+import 'package:expense_tracker/view/home.dart';
 import 'package:expense_tracker/view/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,13 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const HomeScreen(),
+        home: HomePage(),
         getPages: [
-          GetPage(name: '/home_screen', page: () => HomeScreen()),
+          GetPage(
+              name: '/transaction_screen',
+              page: () => TransactionsScreen(
+                    entry: '',
+                  )),
         ]);
   }
 }

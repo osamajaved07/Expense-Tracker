@@ -4,8 +4,9 @@ import 'package:expense_tracker/view/add_expense_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class TransactionsScreen extends StatelessWidget {
+  final String entry;
+  TransactionsScreen({super.key, required this.entry});
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +15,17 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: Text(
-          'Expense Tracker',
+          'Transactions for $entry',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('transactions')
+            .doc(entry)
+            .collection('expenses')
             .orderBy('date', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -186,6 +189,7 @@ class HomeScreen extends StatelessWidget {
                                       existingAmount: transaction['amount'],
                                       existingDescription:
                                           transaction['description'],
+                                      entry: entry,
                                     ),
                                   ),
                                 );
@@ -228,8 +232,8 @@ class HomeScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    AddExpenseScreen(isCashIn: true),
+                                builder: (context) => AddExpenseScreen(
+                                    isCashIn: true, entry: entry),
                               ),
                             );
                           },
@@ -245,8 +249,10 @@ class HomeScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    AddExpenseScreen(isCashIn: false),
+                                builder: (context) => AddExpenseScreen(
+                                  isCashIn: false,
+                                  entry: entry,
+                                ),
                               ),
                             );
                           },

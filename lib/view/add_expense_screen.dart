@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddExpenseScreen extends StatefulWidget {
+  final String entry;
   final bool isCashIn;
   final String? transactionId;
   final double? existingAmount;
@@ -15,7 +16,8 @@ class AddExpenseScreen extends StatefulWidget {
       required this.isCashIn,
       this.transactionId,
       this.existingAmount,
-      this.existingDescription});
+      this.existingDescription,
+      required this.entry});
 
   @override
   State<AddExpenseScreen> createState() => _AddExpenseScreenState();
@@ -46,7 +48,11 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
       if (widget.transactionId == null) {
         // Add new transaction
-        await FirebaseFirestore.instance.collection('transactions').add({
+        await FirebaseFirestore.instance
+            .collection('transactions')
+            .doc(widget.entry)
+            .collection('expenses')
+            .add({
           'amount': widget.isCashIn ? amount : -amount,
           'description': description,
           'date': date,
@@ -56,6 +62,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         // Update existing transaction
         await FirebaseFirestore.instance
             .collection('transactions')
+            .doc(widget.entry)
+            .collection('expenses')
             .doc(widget.transactionId)
             .update({
           'amount': widget.isCashIn ? amount : -amount,
