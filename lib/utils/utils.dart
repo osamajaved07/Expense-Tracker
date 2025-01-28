@@ -36,7 +36,7 @@ double tsmallspace(BuildContext context) {
 }
 
 double tmidspace(BuildContext context) {
-  return MediaQuery.of(context).size.width * 0.04;
+  return MediaQuery.of(context).size.width * 0.1;
 }
 
 double tlargespace(BuildContext context) {

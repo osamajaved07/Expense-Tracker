@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                   top: tlargespace(
                     context,
                   ),
-                  bottom: tmidspace(context)),
+                  bottom: tsmallspace(context)),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -139,65 +139,80 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
+                  SizedBox(
+                    height: tverysmallspace(context),
+                  ),
+                  Container(
+                    height: 1,
+                    width: tfullwidth(context),
+                    decoration: BoxDecoration(color: Colors.grey),
+                  ),
+                  SizedBox(
+                    height: tverysmallspace(context),
+                  ),
                   // Scrollable List
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: transactions.length,
-                      itemBuilder: (context, index) {
-                        final transaction = transactions[index];
-                        final amount = transaction['amount'];
-                        final description = transaction['description'];
-                        final date = transaction['date'].toDate();
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: ListView.builder(
+                        itemCount: transactions.length,
+                        itemBuilder: (context, index) {
+                          final transaction = transactions[index];
+                          final amount = transaction['amount'];
+                          final description = transaction['description'];
+                          final date = transaction['date'].toDate();
 
-                        final formattedDate =
-                            DateFormat('dd MMM yyyy').format(date);
-                        final formattedTime =
-                            DateFormat('hh:mm a').format(date);
+                          final formattedDate =
+                              DateFormat('dd MMM yyyy').format(date);
+                          final formattedTime =
+                              DateFormat('hh:mm a').format(date);
 
-                        return Card(
-                          elevation: 2.0,
-                          margin: EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 8.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddExpenseScreen(
-                                    isCashIn: transaction['amount'] > 0,
-                                    transactionId: transaction.id,
-                                    existingAmount: transaction['amount'],
-                                    existingDescription:
-                                        transaction['description'],
-                                  ),
-                                ),
-                              );
-                            },
-                            leading: Icon(
-                              amount > 0
-                                  ? Icons.arrow_downward
-                                  : Icons.arrow_upward,
-                              color: amount > 0 ? Colors.green : Colors.red,
-                              size: 24.0,
+                          return Card(
+                            elevation: 2.0,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 8.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
-                            title: Text(description,
-                                style: TextStyle(
-                                    fontSize: tsmallfontsize(context))),
-                            subtitle: Text('$formattedDate at $formattedTime'),
-                            trailing: Text(
-                              '\Rs ${amount.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: tverysmallfontsize(context),
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddExpenseScreen(
+                                      isCashIn: transaction['amount'] > 0,
+                                      transactionId: transaction.id,
+                                      existingAmount: transaction['amount'],
+                                      existingDescription:
+                                          transaction['description'],
+                                    ),
+                                  ),
+                                );
+                              },
+                              leading: Icon(
+                                amount > 0
+                                    ? Icons.arrow_downward
+                                    : Icons.arrow_upward,
                                 color: amount > 0 ? Colors.green : Colors.red,
+                                size: 24.0,
+                              ),
+                              title: Text(description,
+                                  style: TextStyle(
+                                      fontSize: tsmallfontsize(context))),
+                              subtitle:
+                                  Text('$formattedDate at $formattedTime'),
+                              trailing: Text(
+                                '\Rs ${amount.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: tverysmallfontsize(context),
+                                  color: amount > 0 ? Colors.green : Colors.red,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
                   // Fixed Bottom Buttons
