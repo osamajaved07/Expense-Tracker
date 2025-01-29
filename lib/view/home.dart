@@ -8,22 +8,22 @@ import 'package:get/get.dart';
 class EntryController extends GetxController {
   // var entries = <String>[].obs;
   var entries = <Map<String, dynamic>>[].obs;
+
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   Future<void> addEntry(String entry) async {
     try {
       var docRef = await firestore.collection('entries').add({
-        'entry': entry,
+        'entry': entry.toString(),
         'timestamp': FieldValue.serverTimestamp(),
       });
 
       entries.insert(0, {
         'id': docRef.id.toString(),
-        'entry': entry.toString()
+        'entry': entry.toString(),
       }); // Add to top
     } catch (e) {
       print("error while adding entry: $e");
-      Get.snackbar('Error', 'Failed to save entry: $e',
-          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -183,8 +183,8 @@ class HomePage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     // final entry = controller.entries[index];
                     final entryData = controller.entries[index];
-                    final entry = entryData['entry'];
-                    final docId = entryData['id'];
+                    final entry = entryData['entry'] as String;
+                    final docId = entryData['id'] as String;
 
                     return GestureDetector(
                       onTap: () {
