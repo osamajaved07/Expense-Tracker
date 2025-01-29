@@ -6,18 +6,19 @@ import 'package:get/get.dart';
 
 // Controller to manage dynamic entries
 class EntryController extends GetxController {
-  var entries = <String>[].obs; // Reactive list for dynamic updates
+  // var entries = <String>[].obs;
+  var entries = <Map<String, dynamic>>[].obs;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   Future<void> addEntry(String entry) async {
     try {
-      // Add entry to Firestore
-      await firestore
-          .collection('entries')
-          .add({'entry': entry, 'timestamp': FieldValue.serverTimestamp()});
+      var docRef = await firestore.collection('entries').add({
+        'entry': entry,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
 
-      // Add entry to local list
-      entries.add(entry);
+      entries.insert(0, {'id': docRef.id, 'entry': entry}); // Add to top
     } catch (e) {
+      print(e);
       Get.snackbar('Error', 'Failed to save entry: $e',
           snackPosition: SnackPosition.BOTTOM);
     }
@@ -27,13 +28,31 @@ class EntryController extends GetxController {
     try {
       QuerySnapshot snapshot = await firestore
           .collection('entries')
-          // .orderBy('timestamp', )
+          .orderBy('timestamp', descending: true)
           .get();
-      entries.value =
-          snapshot.docs.map((doc) => doc['entry'] as String).toList();
+
+      entries.value = snapshot.docs
+          .map((doc) => {
+                'id': doc.id,
+                'entry': doc['entry']?.toString() ?? '', // Ensure it's a string
+              })
+          .toList();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch entries: $e',
-          snackPosition: SnackPosition.BOTTOM);
+      print("error while fetching entries: $e");
+    }
+  }
+
+  Future<void> deleteEntry(String docId) async {
+    try {
+      await firestore.collection('entries').doc(docId).delete();
+      entries.removeWhere((entry) => entry['id'] == docId);
+      Get.snackbar('Success', 'Entry deleted successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.lightGreen);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to delete entry: $e',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red[200]);
     }
   }
   // void addEntry(String entry) {
@@ -45,6 +64,31 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final EntryController controller = Get.put(EntryController());
+
+  void showDeleteConfirmation(BuildContext context, String docId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Deletion"),
+          content: Text("Are you sure you want to delete this entry?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                controller.deleteEntry(docId);
+                Navigator.pop(context);
+              },
+              child: Text("Delete", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void showInputDialog(BuildContext context, Function(String) onSave) {
     TextEditingController _textController = TextEditingController();
@@ -134,25 +178,30 @@ class HomePage extends StatelessWidget {
                       bottom: tmidspace(context)),
                   itemCount: controller.entries.length,
                   itemBuilder: (context, index) {
-                    final entry = controller.entries[index];
+                    // final entry = controller.entries[index];
+                    final entryData = controller.entries[index];
+                    final entry = entryData['entry'];
+                    final docId = entryData['id'];
+
                     return GestureDetector(
                       onTap: () {
                         Get.to(() => TransactionsScreen(entry: entry));
                       },
                       child: Card(
-                        elevation: 4.0,
-                        margin: EdgeInsets.symmetric(vertical: 8.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text(
-                            entry,
-                            style: TextStyle(fontSize: 16.0),
+                          elevation: 4.0,
+                          margin: EdgeInsets.symmetric(vertical: 8.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
                           ),
-                        ),
-                      ),
+                          child: ListTile(
+                            title:
+                                Text(entry, style: TextStyle(fontSize: 16.0)),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () =>
+                                  showDeleteConfirmation(context, docId),
+                            ),
+                          )),
                     );
                   },
                 ),
