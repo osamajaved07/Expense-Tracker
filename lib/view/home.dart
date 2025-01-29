@@ -16,9 +16,12 @@ class EntryController extends GetxController {
         'timestamp': FieldValue.serverTimestamp(),
       });
 
-      entries.insert(0, {'id': docRef.id, 'entry': entry}); // Add to top
+      entries.insert(0, {
+        'id': docRef.id.toString(),
+        'entry': entry.toString()
+      }); // Add to top
     } catch (e) {
-      print(e);
+      print("error while adding entry: $e");
       Get.snackbar('Error', 'Failed to save entry: $e',
           snackPosition: SnackPosition.BOTTOM);
     }
@@ -33,7 +36,7 @@ class EntryController extends GetxController {
 
       entries.value = snapshot.docs
           .map((doc) => {
-                'id': doc.id,
+                'id': doc.id.toString(),
                 'entry': doc['entry']?.toString() ?? '', // Ensure it's a string
               })
           .toList();
@@ -185,7 +188,8 @@ class HomePage extends StatelessWidget {
 
                     return GestureDetector(
                       onTap: () {
-                        Get.to(() => TransactionsScreen(entry: entry));
+                        Get.to(
+                            () => TransactionsScreen(entry: entry.toString()));
                       },
                       child: Card(
                           elevation: 4.0,

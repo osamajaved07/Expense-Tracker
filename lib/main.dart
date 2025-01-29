@@ -1,5 +1,4 @@
 import 'package:expense_tracker/view/home.dart';
-import 'package:expense_tracker/view/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,19 +16,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Expense Tracker',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: HomePage(),
-        getPages: [
-          GetPage(
-              name: '/transaction_screen',
-              page: () => TransactionsScreen(
-                    entry: '',
-                  )),
-        ]);
+      debugShowCheckedModeBanner: false,
+      title: 'Expense Tracker',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: HomePage(),
+    );
   }
 }
