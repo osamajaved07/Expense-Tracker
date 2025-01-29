@@ -61,7 +61,7 @@ class TransactionsScreen extends StatelessWidget {
               padding: EdgeInsets.only(
                   right: tverysmallspace(context),
                   left: tverysmallspace(context),
-                  top: tlargespace(
+                  top: tverylargespace(
                     context,
                   ),
                   bottom: tsmallspace(context)),

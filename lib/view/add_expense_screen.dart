@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable, unused_element
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expense_tracker/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -87,14 +88,17 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               : 'Edit Transaction'),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(tsmallspace(context)),
           child: Form(
               key: _formKey,
               child: Column(
                 children: [
                   TextFormField(
                     controller: _amountController,
-                    decoration: InputDecoration(labelText: 'Amount'),
+                    decoration: InputDecoration(
+                        labelText: 'Amount',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12))),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -103,9 +107,15 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       return null;
                     },
                   ),
+                  SizedBox(
+                    height: tsmallspace(context),
+                  ),
                   TextFormField(
                     controller: _descriptionController,
-                    decoration: InputDecoration(labelText: 'Description'),
+                    decoration: InputDecoration(
+                        labelText: 'Description',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12))),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a description';
@@ -113,9 +123,20 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       return null;
                     },
                   ),
+                  SizedBox(
+                    height: tsmallspace(context),
+                  ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: tbuttoncolor,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: tfullwidth(context) * 0.15)),
                     onPressed: _saveTransaction,
-                    child: Text('Save'),
+                    child: Text(
+                      'Save',
+                      style: TextStyle(
+                          fontSize: tsmallfontsize(context), color: ttextcolor),
+                    ),
                   ),
                 ],
               )),

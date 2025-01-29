@@ -130,7 +130,8 @@ class HomePage extends StatelessWidget {
                   padding: EdgeInsets.only(
                       top: tlargespace(context),
                       left: tsmallspace(context),
-                      right: tsmallspace(context)),
+                      right: tsmallspace(context),
+                      bottom: tmidspace(context)),
                   itemCount: controller.entries.length,
                   itemBuilder: (context, index) {
                     final entry = controller.entries[index];

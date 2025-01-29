@@ -28,20 +28,26 @@ double tlargefontsize(BuildContext context) {
 
 //--------------Space----------------------
 double tverysmallspace(BuildContext context) {
-  return MediaQuery.of(context).size.width * 0.02;
+  return MediaQuery.of(context).size.height * 0.012;
 }
 
 double tsmallspace(BuildContext context) {
-  return MediaQuery.of(context).size.width * 0.04;
+  return MediaQuery.of(context).size.height * 0.025;
 }
 
 double tmidspace(BuildContext context) {
-  return MediaQuery.of(context).size.width * 0.1;
+  return MediaQuery.of(context).size.height * 0.04;
 }
 
 double tlargespace(BuildContext context) {
-  return MediaQuery.of(context).size.width * 0.2;
+  return MediaQuery.of(context).size.height * 0.12;
 }
+
+double tverylargespace(BuildContext context) {
+  return MediaQuery.of(context).size.height * 0.13;
+}
+
+// --------------------------------------------------------------------------------------------------
 
 double tfullwidth(BuildContext context) {
   return MediaQuery.of(context).size.width;
