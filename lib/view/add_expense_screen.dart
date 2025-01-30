@@ -77,6 +77,51 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     }
   }
 
+  Future<void> _deleteTransaction() async {
+    if (widget.transactionId != null) {
+      await FirebaseFirestore.instance
+          .collection('transactions')
+          .doc(widget.entry)
+          .collection('expenses')
+          .doc(widget.transactionId)
+          .delete();
+      Get.snackbar('Success', 'Transaction deleted successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.lightGreen);
+    } else
+      (e) {
+        Get.snackbar('Error', 'Failed to delete entry: $e',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red[200]);
+      };
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Deletion"),
+          content: Text("Are you sure you want to delete this transaction?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await _deleteTransaction();
+                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context); // Navigate back to the previous screen
+              },
+              child: Text("Delete", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +131,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           title: Text(widget.transactionId == null
               ? (widget.isCashIn ? 'Add Cash In' : 'Add Cash Out')
               : 'Edit Transaction'),
+          actions: [
+            if (widget.transactionId !=
+                null) // Show delete icon only for existing transactions
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () => _showDeleteConfirmation(context),
+              ),
+          ],
         ),
         body: Padding(
           padding: EdgeInsets.all(tsmallspace(context)),
